@@ -1,0 +1,15 @@
+# LOTR
+A little piece of crap that adds Google Apps login to Gollum in one file. It also replaces the Home page with Welcome. Since Home sux.
+
+# Stuff
+
+    cp examples/rvmrc .rvmrc
+    bundle --binstubs
+
+# Use
+
+You'll nedd to set the following envars:
+
+    export LOTR_SESSION_KEY="1324567"
+    export LOTR_REPO_PATH="/"
+    export LOTR_GAPPS_DOMAIN="microsoft.co.uk"
