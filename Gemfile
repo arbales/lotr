@@ -3,11 +3,14 @@ source "http://rubygems.org"
 
 # gem "rails"
 gem 'sanitize', '2.0.0'
-gem 'omniauth', "~> 0.2.6"
-gem 'gollum', "2.0.0"
-gem 'rack-rewrite'
-gem 'foreman'
+gem 'gollum', "2.0.0", require: 'gollum/frontend/app'
+gem 'rack-rewrite', require: 'rack/rewrite'
+gem 'sinatra', require: 'sinatra/base'
+gem 'active_support', require: 'active_support/core_ext/hash/indifferent_access'
+gem 'omniauth'
+gem 'oa-openid', require: 'openid/store/filesystem'
+gem 'omniauth-google-apps'
 
-group :development do
-  gem "unicorn"
-end
+
+gem 'foreman'
+gem "unicorn"

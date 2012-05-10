@@ -1,27 +1,9 @@
 require 'bundler'
 Bundler.require
-require 'sinatra'
-require 'gollum/frontend/app'
-require 'openid/store/filesystem'
-require 'rack/rewrite'
-require './lib/ext/gollum'
 
-class Wiki < Precious::App
-  set :gollum_path, ENV['LOTR_REPO_PATH']
-  set :wiki_options, {}
-  use Rack::Session::Cookie, :key => 'endorwiki.session',
-                             :secret => ENV['LOTR_SESSION_KEY']
-  before do
-    if not session[:user]
-      redirect '/'
-    end
-    Gollum::Wiki.default_committer_name = session[:user]['name']
-    Gollum::Wiki.default_committer_email = session[:user]['email']
-  end
-  get '/' do
-    show_page_or_file('Welcome')
-  end
-end
+require './lib/ext/gollum'
+require './lib/configuration.rb'
+require './lib/wiki.rb'
 
 class App < Sinatra::Base
   configure :development do
@@ -29,23 +11,47 @@ class App < Sinatra::Base
     Sinatra::Application.reset!
   end
 
-  use Rack::Session::Cookie, :key => 'endorwiki.session',
-                             :secret => ENV['LOTR_SESSION_KEY']
-  use OmniAuth::Strategies::GoogleApps, OpenID::Store::Filesystem.new('/tmp'), :domain => ENV['LOTR_GAPPS_DOMAIN']
+  use Rack::Session::Cookie, key: CONFIG[:session][:key],
+                             secret: CONFIG[:session][:secret]
 
+  use OmniAuth::Builder do
+    provider :google_apps, store: OpenID::Store::Filesystem.new('/tmp'),
+                           domain: CONFIG[:google][:domain]
+  end
+
+  helpers do
+    def auth_hash
+      request.env['omniauth.auth']
+    end
+  end
+
+  # Callback for OpenID login.
   post '/auth/google_apps/callback' do
-    auth_hash = request.env['omniauth.auth']
-    user = session[:user] = auth_hash['user_info']
+    unless auth_hash[:provider] == 'google_apps'
+      403
+    end
+    user = session[:user] = auth_hash['info']
     if user['email']
       redirect '/'
     else
       session.clear
-      redirect '/403'
+      403
     end
   end
 
-  get '/update' do
+  post '/auth/google_oauth2/callback' do
+    unless auth_hash[:provider] == 'google_oauth2'
+      403
+    end
 
+    user = auth_hash['info']
+    if email = user['email'] && email.end_with?("@#{CONFIG[:google][:domain]}")
+      session[:user] = user
+      redirect '/'
+    else
+      session.clear
+      403
+    end
   end
 
   get '/' do
@@ -67,6 +73,10 @@ class App < Sinatra::Base
     else
       "Not Found"
     end
+  end
+
+  error 403 do
+    "Forbidden"
   end
 
 
