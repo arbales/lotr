@@ -1,21 +1,18 @@
 # LOTR
-A little piece of crap that adds Google Apps login to Gollum in one file. It also replaces the Home page with Welcome.
+A small Sinatra application that adds Google Apps (and more) authentication
+support to the [Gollum Wiki](https://github.com/github/gollum). It's
+very easy to setup.
 
 # Setup
 
-    cp examples/rvmrc .rvmrc
-    cp examples/env .env
+    cp samples/rvmrc .rvmrc
+    cp config/application.yml.sample config/application.yml
     bundle --binstubs
 
 # Use
 
-You'll need to set the following environment variables – if you like,
-those may be set in a `.env` file at the root of the project.
-Foreman will automatically use those environment variables while running
-your application.
+You'll need to configure your instance of the application by editing
+your copy of the `config/application.yml` to suit your needs. The fields
+provided in the sample are required.
 
-    export LOTR_SESSION_KEY="1324567"
-    export LOTR_REPO_PATH="/"
-    export LOTR_GAPPS_DOMAIN="microsoft.co.uk"
-
-When you're good-to-go, run `foreman start`
+When you're good-to-go, run `foreman start`.

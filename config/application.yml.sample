@@ -1,5 +1,3 @@
-base_url: 'http://localhost:3000'
-
 gollum:
   # The location of the directory where your wiki's repository exists.
   # NOTE: You're responsible for initializing a repository at this
@@ -10,11 +8,7 @@ google:
   # If a plain OpenID flow is used, require logins from this domain.
   domain: 'do.com'
 
-  # OAuth keys for OAuth based login.
-  # If either of these are nil, oAuth2 will not be available.
-  oauth2_key: <%= ENV['GOOGLE_OAUTH2_KEY'] %>
-  oauth2_secret: <%= ENV['GOOGLE_OAUTH2_SECRET'] %>
-  
-  
+session:
+  secret: 'SOMETHING_SECURE'
 
 
