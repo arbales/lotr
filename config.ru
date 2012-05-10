@@ -4,15 +4,7 @@ require 'sinatra'
 require 'gollum/frontend/app'
 require 'openid/store/filesystem'
 require 'rack/rewrite'
-
-class Gollum::Wiki
-  def default_committer_name
-    self.class.default_committer_name
-  end
-  def default_committer_email
-    self.class.default_committer_email
-  end
-end
+require './lib/ext/gollum'
 
 class Wiki < Precious::App
   set :gollum_path, ENV['LOTR_REPO_PATH']
@@ -34,14 +26,13 @@ end
 class App < Sinatra::Base
   configure :development do
     use Rack::Reloader
-    Sinatra::Application.reset!    
+    Sinatra::Application.reset!
   end
-  
+
   use Rack::Session::Cookie, :key => 'endorwiki.session',
                              :secret => ENV['LOTR_SESSION_KEY']
-                             
   use OmniAuth::Strategies::GoogleApps, OpenID::Store::Filesystem.new('/tmp'), :domain => ENV['LOTR_GAPPS_DOMAIN']
-  
+
   post '/auth/google_apps/callback' do
     auth_hash = request.env['omniauth.auth']
     user = session[:user] = auth_hash['user_info']
@@ -52,11 +43,11 @@ class App < Sinatra::Base
       redirect '/403'
     end
   end
-  
+
   get '/update' do
-    
+
   end
-  
+
   get '/' do
     if not session[:user]
       erb :login
@@ -64,12 +55,12 @@ class App < Sinatra::Base
       redirect '/wiki'
     end
   end
-  
+
   get '/logout' do
     session.clear
     redirect '/'
   end
-  
+
   not_found do
     if not request.path_info.start_with? '/auth'
       redirect "/wiki#{request.fullpath}"
@@ -77,7 +68,6 @@ class App < Sinatra::Base
       "Not Found"
     end
   end
-  
 
 
 end
@@ -91,5 +81,5 @@ map '/wiki' do
 end
 
 map '/' do
-  run App.new   
+  run App.new
 end
