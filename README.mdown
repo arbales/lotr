@@ -8,7 +8,7 @@ A little piece of crap that adds Google Apps login to Gollum in one file. It als
 
 # Use
 
-You'll nedd to set the following envars:
+You'll need to set the following environment variables:
 
     export LOTR_SESSION_KEY="1324567"
     export LOTR_REPO_PATH="/"

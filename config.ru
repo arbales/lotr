@@ -83,7 +83,7 @@ class App < Sinatra::Base
 end
 
 use Rack::Rewrite do
-  rewrite %r{/(javascript|css|edit|create)(.*)}, '/wiki/$1$2'
+  rewrite %r{/(javascript|css|edit|create|preview|compare)(.*)}, '/wiki/$1$2'
 end
 
 map '/wiki' do
