@@ -10,5 +10,6 @@ google:
 
 session:
   secret: 'SOMETHING_SECURE'
+  key: 'endorwiki.session'
 
 
