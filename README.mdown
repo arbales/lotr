@@ -16,3 +16,6 @@ your copy of the `config/application.yml` to suit your needs. The fields
 provided in the sample are required.
 
 When you're good-to-go, run `foreman start`.
+
+If you want to run the server on a specific port (defaults to `5000`), enter the port number as a parameter to the previous command.
+For example, to start the server on port 4567, run `foreman start -p 4567`.
